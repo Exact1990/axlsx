@@ -82,7 +82,7 @@ module Axlsx
   end
   # Requires that the value is a Integer and is greater or equal to 0
   # @param [Any] v The value validated
-  # @raise [ArgumentError] raised if the value is not a Numeric value greater or equal to 0
+  # @raise [ArgumentError] raised if the value is not a Integer value greater or equal to 0
   # @return [Boolean] true if the data is valid
   def self.validate_unsigned_int(v)
     DataTypeValidator.validate(:unsigned_int, [Integer], v, lambda { |arg| arg.respond_to?(:>=) && arg >= 0 })
@@ -90,7 +90,7 @@ module Axlsx
 
   # Requires that the value is a Integer or Float and is greater or equal to 0
   # @param [Any] v The value validated
-  # @raise [ArgumentError] raised if the value is not a Integer, Float value greater or equal to 0
+  # @raise [ArgumentError] raised if the value is not a Fixnun, Integer, Float value greater or equal to 0
   # @return [Boolean] true if the data is valid
   def self.validate_unsigned_numeric(v)
     DataTypeValidator.validate("Invalid column width", [Integer, Float], v, lambda { |arg| arg.respond_to?(:>=) && arg.to_i >= 0 })
@@ -99,7 +99,7 @@ module Axlsx
   # Requires that the value is a Integer
   # @param [Any] v The value validated
   def self.validate_int(v)
-    DataTypeValidator.validate :unsigned_int, [ Integer], v
+    DataTypeValidator.validate :unsigned_int, [Integer], v
   end
 
   # Requires that the value is a form that can be evaluated as a boolean in an xml document.

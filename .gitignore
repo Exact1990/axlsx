@@ -17,5 +17,3 @@ examples/sprk2012
 .bundle/config
 .~lock*
 *.qcachegrind
-*.iml
-.idea
