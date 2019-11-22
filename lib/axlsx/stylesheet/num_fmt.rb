@@ -70,16 +70,9 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      serialized_tag('numFmt', str)
-    end
-
-    # Override to avoid removing underscores
-    def serialized_attributes(str = '', additional_attributes = {})
-      attributes = declared_attributes.merge! additional_attributes
-      attributes.each do |key, value|
-        str << "#{Axlsx.camel(key, false)}=\"#{Axlsx.booleanize(value)}\" "
-      end
-      str
+      str << '<numFmt '
+      serialized_attributes str
+      str << '/>'
     end
 
   end

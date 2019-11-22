@@ -91,7 +91,9 @@ module Axlsx
     # @note For compatibility, this is a noop unless custom margins have been specified.
     # @see #custom_margins_specified?
     def to_xml_string(str = '')
-      serialized_tag('pageMargins', str)
+      str << '<pageMargins '
+      serialized_attributes str
+      str << '/>'
     end
   end
 end

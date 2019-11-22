@@ -63,9 +63,11 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str="")
-      serialized_tag('iconSet', str) do
-        @value_objects.each { |cfvo| cfvo.to_xml_string(str) }
-      end
+      str << '<iconSet '
+      serialized_attributes str
+      str << '>'
+      @value_objects.each { |cfvo| cfvo.to_xml_string(str) }
+      str << '</iconSet>'
     end
 
     private

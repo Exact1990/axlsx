@@ -43,7 +43,9 @@ module Axlsx
     # seralizes this object to an xml string
     # @param [String] str the string to contact this objects serialization to.
     def to_xml_string(str = '')
-      serialized_tag('tableStyleInfo', str)
+      str << '<tableStyleInfo '
+      serialized_attributes str
+      str << '/>'
     end
   end
 end

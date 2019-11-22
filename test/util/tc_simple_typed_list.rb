@@ -1,7 +1,7 @@
 require 'tc_helper.rb'
 class TestSimpleTypedList < Test::Unit::TestCase
   def setup
-    @list = Axlsx::SimpleTypedList.new Integer
+    @list = Axlsx::SimpleTypedList.new Fixnum
   end
 
   def teardown
@@ -72,6 +72,7 @@ class TestSimpleTypedList < Test::Unit::TestCase
   def test_equality
     @list.push 1
     @list.push 2
-    assert_equal(@list.to_ary, [1,2])
+    assert_equal(@list, [1,2])
+    
   end
 end

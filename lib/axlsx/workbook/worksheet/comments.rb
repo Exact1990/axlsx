@@ -42,22 +42,23 @@ module Axlsx
       raise ArgumentError, "Comment require an author" unless options[:author]
       raise ArgumentError, "Comment requires text" unless options[:text]
       raise ArgumentError, "Comment requires ref" unless options[:ref]
-      self << Comment.new(self, options)
-      yield last if block_given?
-      last
+      @list << Comment.new(self, options)
+      yield @list.last if block_given?
+      @list.last
     end
 
     # A sorted list of the unique authors in the contained comments
     # @return [Array]
     def authors
-      map { |comment| comment.author.to_s }.uniq.sort
+      @list.map { |comment| comment.author.to_s }.uniq.sort
     end
 
     # The relationships required by this object
     # @return [Array]
     def relationships
       [Relationship.new(self, VML_DRAWING_R, "../#{vml_drawing.pn}"),
-       Relationship.new(self, COMMENT_R, "../#{pn}")]
+       Relationship.new(self, COMMENT_R, "../#{pn}"),
+       Relationship.new(self, COMMENT_R_NULL, "NULL")]
     end
 
     # serialize the object
@@ -65,12 +66,14 @@ module Axlsx
     # @return [String]
     def to_xml_string(str="")
       str << '<?xml version="1.0" encoding="UTF-8"?>'
-      str << ('<comments xmlns="' << XML_NS << '"><authors>')
+      str << '<comments xmlns="' << XML_NS << '">'
+      str << '<authors>'
       authors.each do  |author|
-        str << ('<author>' << author.to_s << '</author>')
+        str << '<author>' << author.to_s << '</author>'
       end
-      str << '</authors><commentList>'
-      each do |comment|
+      str << '</authors>'
+      str << '<commentList>'
+      @list.each do |comment|
         comment.to_xml_string str
       end
       str << '</commentList></comments>'

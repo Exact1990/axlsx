@@ -124,7 +124,9 @@ module Axlsx
     # @return [String]
     def to_xml_string(str = '')
       finalize
-      serialized_tag 'pane', str
+      str << '<pane '
+      serialized_attributes str
+      str << '/>'
     end
     private
 

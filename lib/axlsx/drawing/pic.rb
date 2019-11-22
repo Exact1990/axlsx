@@ -9,13 +9,12 @@ module Axlsx
 
     # Creates a new Pic(ture) object
     # @param [Anchor] anchor the anchor that holds this image
-    # @option options [String] :name
-    # @option options [String] :descr
-    # @option options [String] :image_src
-    # @option options [Array] :start_at
-    # @option options [Integer] :width
-    # @option options [Integer] :height
-    # @option options [Float] :opacity - set the picture opacity, accepts a value between 0.0 and 1.0
+    # @option options [String] name
+    # @option options [String] descr
+    # @option options [String] image_src
+    # @option options [Array] start_at
+    # @option options [Intger] width
+    # @option options [Intger] height
     def initialize(anchor, options={})
       @anchor = anchor
       @hyperlink = nil
@@ -24,11 +23,10 @@ module Axlsx
       start_at(*options[:start_at]) if options[:start_at]
       yield self if block_given?
       @picture_locking = PictureLocking.new(options)
-      @opacity = (options[:opacity] * 100000).round if options[:opacity]
     end
 
-    # allowed mime types
-    ALLOWED_MIME_TYPES = %w(image/jpeg image/png image/gif)
+    # allowed file extenstions
+    ALLOWED_EXTENSIONS = ['gif', 'jpeg', 'png', 'jpg']
 
     # The name to use for this picture
     # @return [String]
@@ -52,28 +50,24 @@ module Axlsx
 
     attr_reader :hyperlink
 
-    # Picture opacity
-    # @return [Integer]
-    attr_reader :opacity
-
     # sets or updates a hyperlink for this image.
     # @param [String] v The href value for the hyper link
     # @option options @see Hyperlink#initialize All options available to the Hyperlink class apply - however href will be overridden with the v parameter value.
     def hyperlink=(v, options={})
       options[:href] = v
-      if hyperlink.is_a?(Hyperlink)
+      if @hyperlink.is_a?(Hyperlink)
         options.each do |o|
-          hyperlink.send("#{o[0]}=", o[1]) if hyperlink.respond_to? "#{o[0]}="
+          @hyperlink.send("#{o[0]}=", o[1]) if @hyperlink.respond_to? "#{o[0]}="
         end
       else
         @hyperlink = Hyperlink.new(self, options)
       end
-      hyperlink
+      @hyperlink
     end
 
     def image_src=(v)
       Axlsx::validate_string(v)
-      RestrictionValidator.validate 'Pic.image_src', ALLOWED_MIME_TYPES, MimeTypeUtils.get_mime_type(v)
+      RestrictionValidator.validate 'Pic.image_src', ALLOWED_EXTENSIONS, File.extname(v.downcase).delete('.')
       raise ArgumentError, "File does not exist" unless File.exist?(v)
       @image_src = v
     end
@@ -83,6 +77,7 @@ module Axlsx
 
     # @see descr
     def descr=(v) Axlsx::validate_string(v); @descr = v; end
+
 
     # The file name of image_src without any path information
     # @return [String]
@@ -115,6 +110,7 @@ module Axlsx
     end
 
     # providing access to the anchor's width attribute
+    # @param [Integer] v
     # @see OneCellAnchor.width
     def width
       return unless @anchor.is_a?(OneCellAnchor)
@@ -128,6 +124,7 @@ module Axlsx
     end
 
     # providing access to update the anchor's height attribute
+    # @param [Integer] v
     # @see OneCellAnchor.width
     # @note this is a noop if you are using a TwoCellAnchor
     def height
@@ -168,20 +165,17 @@ module Axlsx
     def to_xml_string(str = '')
       str << '<xdr:pic>'
       str << '<xdr:nvPicPr>'
-      str << ('<xdr:cNvPr id="2" name="' << name.to_s << '" descr="' << descr.to_s << '">')
-      hyperlink.to_xml_string(str) if hyperlink.is_a?(Hyperlink)
+      str << '<xdr:cNvPr id="2" name="' << name.to_s << '" descr="' << descr.to_s << '">'
+      @hyperlink.to_xml_string(str) if @hyperlink.is_a?(Hyperlink)
       str << '</xdr:cNvPr><xdr:cNvPicPr>'
       picture_locking.to_xml_string(str)
       str << '</xdr:cNvPicPr></xdr:nvPicPr>'
       str << '<xdr:blipFill>'
-      str << ('<a:blip xmlns:r ="' << XML_NS_R << '" r:embed="' << relationship.Id << '">')
-      if opacity
-        str << "<a:alphaModFix amt=\"#{opacity}\"/>"
-      end
-      str << '</a:blip>'
+      str << '<a:blip xmlns:r ="' << XML_NS_R << '" r:embed="' << relationship.Id <<  '"/>'
       str << '<a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr>'
       str << '<a:xfrm><a:off x="0" y="0"/><a:ext cx="2336800" cy="2161540"/></a:xfrm>'
       str << '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic>'
+
     end
 
     private

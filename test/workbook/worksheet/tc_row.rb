@@ -27,14 +27,9 @@ class TestRow < Test::Unit::TestCase
     r.cells.each { |c| assert_equal(c.style,1) }
   end
 
-  def test_color
-    r = @ws.add_row([1,2,3,4,5])
-    r.color = "FF00FF00"
-    r.cells.each { |c| assert_equal(c.color.rgb, "FF00FF00") }
-  end
 
   def test_index
-    assert_equal(@row.row_index, @row.worksheet.rows.index(@row))
+    assert_equal(@row.index, @row.worksheet.rows.index(@row))
   end
 
   def test_add_cell
@@ -116,7 +111,7 @@ class TestRow < Test::Unit::TestCase
     @row.add_cell 1
     @row.height = 20
     r_s_xml = Nokogiri::XML(@row.to_xml_string(0, ''))
-    assert_equal(r_s_xml.xpath(".//row[@r=1][@ht=20][@customHeight=1]").size, 1)
+    assert_equal(r_s_xml.xpath(".//row[@r=1][@ht=20][@customHeight='true']").size, 1)
   end
 
 end

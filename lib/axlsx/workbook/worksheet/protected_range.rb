@@ -41,7 +41,9 @@ module Axlsx
     # our output to that object. Use this - it helps limit the number of
     # objects created during serialization
     def to_xml_string(str="")
-      serialized_tag 'protectedRange', str
+      str << '<protectedRange '
+      serialized_attributes str
+      str << '/>'
     end 
   end
 end

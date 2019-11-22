@@ -128,7 +128,7 @@ module Axlsx
     # @option options [Boolean] i Indicates if the text should be italicised
     # @option options [Boolean] u Indicates if the text should be underlined
     # @option options [Boolean] strike Indicates if the text should be rendered with a strikethrough
-    # @option options [Boolean] shadow Indicates if the text should be rendered with a shadow
+    # @option options [Boolean] strike Indicates if the text should be rendered with a shadow
     # @option options [Integer] charset The character set to use.
     # @option options [Integer] family The font family to use.
     # @option options [String] font_name The name of the font to use
@@ -151,7 +151,7 @@ module Axlsx
     #   ws = p.workbook.add_worksheet
     #
     #   # black text on a white background at 14pt with thin borders!
-    #   title = ws.styles.add_style(:bg_color => "FFFF0000", :fg_color=>"#FF000000", :sz=>14,  :border=> {:style => :thin, :color => "FFFF0000"}
+    #   title = ws.style.add_style(:bg_color => "FFFF0000", :fg_color=>"#FF000000", :sz=>14,  :border=> {:style => :thin, :color => "FFFF0000"}
     #
     #   ws.add_row ["Least Popular Pets"]
     #   ws.add_row ["", "Dry Skinned Reptiles", "Bald Cats", "Violent Parrots"], :style=>title
@@ -168,18 +168,18 @@ module Axlsx
     #   ws = p.workbook.add_worksheet
     #
     #   # define your styles
-    #   title = ws.styles.add_style(:bg_color => "FFFF0000",
+    #   title = ws.style.add_style(:bg_color => "FFFF0000",
     #                              :fg_color=>"#FF000000",
     #                              :border=>Axlsx::STYLE_THIN_BORDER,
     #                              :alignment=>{:horizontal => :center})
     #
-    #   date_time = ws.styles.add_style(:num_fmt => Axlsx::NUM_FMT_YYYYMMDDHHMMSS,
+    #   date_time = ws.style.add_style(:num_fmt => Axlsx::NUM_FMT_YYYYMMDDHHMMSS,
     #                                  :border=>Axlsx::STYLE_THIN_BORDER)
     #
-    #   percent = ws.styles.add_style(:num_fmt => Axlsx::NUM_FMT_PERCENT,
+    #   percent = ws.style.add_style(:num_fmt => Axlsx::NUM_FMT_PERCENT,
     #                                :border=>Axlsx::STYLE_THIN_BORDER)
     #
-    #   currency = ws.styles.add_style(:format_code=>"¥#,##0;[Red]¥-#,##0",
+    #   currency = ws.style.add_style(:format_code=>"¥#,##0;[Red]¥-#,##0",
     #                                 :border=>Axlsx::STYLE_THIN_BORDER)
     #
     #   # build your rows
@@ -362,7 +362,7 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      str << ('<styleSheet xmlns="' << XML_NS << '">')
+      str << '<styleSheet xmlns="' << XML_NS << '">'
       [:numFmts, :fonts, :fills, :borders, :cellStyleXfs, :cellXfs, :cellStyles, :dxfs, :tableStyles].each do |key|
         self.instance_values[key.to_s].to_xml_string(str) unless self.instance_values[key.to_s].nil?
       end

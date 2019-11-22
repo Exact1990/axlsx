@@ -20,18 +20,15 @@ module Axlsx
              elsif cells.is_a?(SimpleTypedList) || cells.is_a?(Array)
                Axlsx::cell_range(cells, false)
              end
-     self << ProtectedRange.new(:sqref => sqref, :name => "Range#{size}")
+     @list << ProtectedRange.new(:sqref => sqref, :name => "Range#{size}")
      last
     end
 
-    # Serializes the protected ranges
-    # @param [String] str
-    # @return [String]
     def to_xml_string(str = '')
       return if empty?
       str << '<protectedRanges>'
       each { |range| range.to_xml_string(str) }
-      str << '</protectedRanges>'
+      str << '</protectedRanges>' 
     end
   end
 end

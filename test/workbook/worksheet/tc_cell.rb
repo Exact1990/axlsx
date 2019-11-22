@@ -4,7 +4,6 @@ class TestCell < Test::Unit::TestCase
 
   def setup
     p = Axlsx::Package.new
-    p.use_shared_strings = true
     @ws = p.workbook.add_worksheet :name=>"hmmm"
     p.workbook.styles.add_style :sz=>20
     @row = @ws.add_row
@@ -35,7 +34,7 @@ class TestCell < Test::Unit::TestCase
   end
 
   def test_pos
-    assert_equal(@c.pos, [@c.index, @c.row.index(@c)])
+    assert_equal(@c.pos, [@c.index, @c.row.index])
   end
 
   def test_r
@@ -49,25 +48,6 @@ class TestCell < Test::Unit::TestCase
   def test_r_abs
     assert_equal(@c.r_abs,"$A$1", "calculate absolute cell reference")
     assert_equal(@cAA.r_abs,"$AA$2", "needs to accept multi-digit columns")
-  end
-
-  def test_name
-    @c.name = 'foo'
-    assert_equal(1, @ws.workbook.defined_names.size)
-    assert_equal('foo', @ws.workbook.defined_names.last.name)
-  end
-
-  def test_autowidth
-    style = @c.row.worksheet.workbook.styles.add_style({:alignment => {:horizontal => :center, :vertical => :center, :wrap_text => true}}  )
-    @c.style = style
-    assert_equal(@c.autowidth, 5.5)
-  end
-
-  def test_time
-    @c.type = :time
-    now = DateTime.now
-    @c.value = now
-    assert_equal(@c.value, now.to_time)
   end
 
   def test_style
@@ -109,7 +89,6 @@ class TestCell < Test::Unit::TestCase
     assert_equal(@c.send(:cell_type_from_value, true), :boolean)
     assert_equal(@c.send(:cell_type_from_value, false), :boolean)
     assert_equal(@c.send(:cell_type_from_value, 1.0/10**6), :float)
-    assert_equal(@c.send(:cell_type_from_value, Axlsx::RichText.new), :richtext)
     assert_equal(:iso_8601, @c.send(:cell_type_from_value, '2008-08-30T01:45:36.123+09:00'))
   end
 
@@ -122,8 +101,6 @@ class TestCell < Test::Unit::TestCase
     assert_equal(@c.send(:cast_value, "1.0"), 1.0)
     @c.type = :string
     assert_equal(@c.send(:cast_value, nil), nil)
-    @c.type = :richtext
-    assert_equal(@c.send(:cast_value, nil), nil)
     @c.type = :float
     assert_equal(@c.send(:cast_value, nil), nil)
     @c.type = :boolean
@@ -131,19 +108,6 @@ class TestCell < Test::Unit::TestCase
     assert_equal(@c.send(:cast_value, false), 0)
     @c.type = :iso_8601
     assert_equal("2012-10-10T12:24", @c.send(:cast_value, "2012-10-10T12:24"))
-  end
-
-  def test_cast_time_subclass
-    subtime = Class.new(Time) do
-      def to_time
-        raise "#to_time of Time subclass should not be called"
-      end
-    end
-
-    time = subtime.now
-
-    @c.type = :time
-    assert_equal(time, @c.send(:cast_value, time))
   end
 
   def test_color
@@ -253,13 +217,6 @@ class TestCell < Test::Unit::TestCase
     assert_equal(@c.row.worksheet.send(:merged_cells).last, "A1:C1")
   end
 
-  def test_reverse_merge_with_cell
-    @c.row.add_cell 2
-    @c.row.add_cell 3
-    @row.cells.last.merge @c
-    assert_equal(@c.row.worksheet.send(:merged_cells).last, "A1:C1")
-  end
-
   def test_ssti
     assert_raise(ArgumentError, "ssti must be an unsigned integer!") { @c.send(:ssti=, -1) }
     @c.send :ssti=, 1
@@ -298,7 +255,7 @@ class TestCell < Test::Unit::TestCase
     c_xml = Nokogiri::XML(@c.to_xml_string(1,1))
     assert_equal(c_xml.xpath("/c[@s=1]").size, 1)
   end
-
+  
   def test_to_xml_string_with_run
     # Actually quite a number of similar run styles
     # but the processing should be the same
@@ -308,7 +265,7 @@ class TestCell < Test::Unit::TestCase
     @c.font_name = 'arial'
     @c.color = 'FF0000'
     c_xml = Nokogiri::XML(@c.to_xml_string(1,1))
-    assert(c_xml.xpath("//b").any?)
+    assert(c_xml.xpath("//b"))
   end
 
   def test_to_xml_string_formula
@@ -317,35 +274,8 @@ class TestCell < Test::Unit::TestCase
       sheet.add_row ["=IF(2+2=4,4,5)"]
     end
     doc = Nokogiri::XML(ws.to_xml_string)
-    doc.remove_namespaces!
-    assert(doc.xpath("//f[text()='IF(2+2=4,4,5)']").any?)
-  end
+    assert(doc.xpath("//f[@text()='IF(2+2=4,4,5)']"))
 
-  def test_to_xml_string_array_formula
-    p = Axlsx::Package.new
-    ws = p.workbook.add_worksheet do |sheet|
-      sheet.add_row ["{=SUM(C2:C11*D2:D11)}"]
-    end
-    doc = Nokogiri::XML(ws.to_xml_string)
-    doc.remove_namespaces!
-    assert(doc.xpath("//f[text()='SUM(C2:C11*D2:D11)']").any?)
-    assert(doc.xpath("//f[@t='array']").any?)
-    assert(doc.xpath("//f[@ref='A1']").any?)
-  end
-
-  def test_to_xml_string_text_formula
-    p = Axlsx::Package.new
-    ws = p.workbook.add_worksheet do |sheet|
-      sheet.add_row ["=1+1", "-1+1"], type: :text
-    end
-    doc = Nokogiri::XML(ws.to_xml_string)
-    doc.remove_namespaces!
-
-    assert(doc.xpath("//f[text()='1+1']").empty?)
-    assert(doc.xpath("//t[text()='=1+1']").any?)
-
-    assert(doc.xpath("//f[text()='1+1']").empty?)
-    assert(doc.xpath("//t[text()='-1+1']").any?)
   end
 
   def test_font_size_with_custom_style_and_no_sz
@@ -364,17 +294,17 @@ class TestCell < Test::Unit::TestCase
     sz = @c.send(:font_size)
     assert_equal(sz, 52)
   end
+  
 
   def test_cell_with_sz
     @c.sz = 25
     assert_equal(25, @c.send(:font_size))
   end
-
   def test_to_xml
     # TODO This could use some much more stringent testing related to the xml content generated!
     @ws.add_row [Time.now, Date.today, true, 1, 1.0, "text", "=sum(A1:A2)", "2013-01-13T13:31:25.123"]
     @ws.rows.last.cells[5].u = true
-
+    
     schema = Nokogiri::XML::Schema(File.open(Axlsx::SML_XSD))
     doc = Nokogiri::XML(@ws.to_xml_string)
     errors = []
@@ -383,5 +313,7 @@ class TestCell < Test::Unit::TestCase
       puts error.message
     end
     assert(errors.empty?, "error free validation")
+
   end
+
 end

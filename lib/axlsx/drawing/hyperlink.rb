@@ -93,7 +93,9 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      serialized_tag 'a:hlinkClick', str, {:'r:id' => relationship.Id, :'xmlns:r' => XML_NS_R }
+      str << '<a:hlinkClick '
+      serialized_attributes str, {:'r:id' => relationship.Id, :'xmlns:r' => XML_NS_R }
+      str << '/>'
     end
 
   end

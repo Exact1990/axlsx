@@ -33,7 +33,7 @@ module Axlsx
     # allowed element tag names
     # @return [Array]
     def self.allowed_tag_names
-      [:yVal, :val, :bubbleSize]
+      [:yVal, :val]
     end
 
      # sets the tag name for this data source
@@ -46,16 +46,16 @@ module Axlsx
     # serialize the object
     # @param [String] str
     def to_xml_string(str="")
-      str << ('<c:' << tag_name.to_s << '>')
+      str << '<c:' << tag_name.to_s << '>'
       if @f
-        str << ('<c:' << @ref_tag_name.to_s << '>')
-        str << ('<c:f>' << @f.to_s << '</c:f>')
+        str << '<c:' << @ref_tag_name.to_s << '>'
+        str << '<c:f>' << @f.to_s << '</c:f>'
       end
       @data.to_xml_string str
       if @f
-        str << ('</c:' << @ref_tag_name.to_s << '>')
+        str << '</c:' << @ref_tag_name.to_s << '>'
       end
-      str << ('</c:' << tag_name.to_s << '>')
+      str << '</c:' << tag_name.to_s << '>'
     end
   end
 end

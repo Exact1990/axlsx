@@ -15,11 +15,9 @@ module Axlsx
     # collection. This can be an array of actual cells or a string style
     # range like 'A1:C1'
     def add(cells)
-      self << if cells.is_a?(String)
+      @list << if cells.is_a?(String)
                  cells
                elsif cells.is_a?(Array)
-                 Axlsx::cell_range(cells, false)
-               elsif cells.is_a?(Row)
                  Axlsx::cell_range(cells, false)
                end
     end
@@ -28,7 +26,7 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      return if empty?
+      return if @list.empty?
       str << "<mergeCells count='#{size}'>"
       each { |merged_cell| str << "<mergeCell ref='#{merged_cell}'></mergeCell>" }
       str << '</mergeCells>'

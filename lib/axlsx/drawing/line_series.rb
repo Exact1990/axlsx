@@ -23,22 +23,12 @@ module Axlsx
     # @return [Boolean]
     attr_reader :show_marker
 
-    # custom marker symbol
-    # @return [String]
-    attr_reader :marker_symbol
-
-    # line smoothing on values
-    # @return [Boolean]
-    attr_reader :smooth
-
     # Creates a new series
     # @option options [Array, SimpleTypedList] data
     # @option options [Array, SimpleTypedList] labels
     # @param [Chart] chart
     def initialize(chart, options={})
       @show_marker = false
-      @marker_symbol = options[:marker_symbol] ? options[:marker_symbol] : :default
-      @smooth = false
       @labels, @data = nil, nil
       super(chart, options)
       @labels = AxDataSource.new(:data => options[:labels]) unless options[:labels].nil?
@@ -56,18 +46,6 @@ module Axlsx
       @show_marker = v
     end
 
-    # @see marker_symbol
-    def marker_symbol=(v)
-      Axlsx::validate_marker_symbol(v)
-      @marker_symbol = v
-    end
-
-    # @see smooth
-    def smooth=(v)
-      Axlsx::validate_boolean(v)
-      @smooth = v
-    end
-
     # Serializes the object
     # @param [String] str
     # @return [String]
@@ -75,26 +53,19 @@ module Axlsx
       super(str) do
         if color
           str << '<c:spPr><a:solidFill>'
-          str << ('<a:srgbClr val="' << color << '"/>')
+          str << '<a:srgbClr val="' << color << '"/>'
           str << '</a:solidFill>'
           str << '<a:ln w="28800">'
           str << '<a:solidFill>'
-          str << ('<a:srgbClr val="' << color << '"/>')
+          str << '<a:srgbClr val="' << color << '"/>'
           str << '</a:solidFill>'
           str << '</a:ln>'
           str << '<a:round/>'
           str << '</c:spPr>'
         end
-
-        if !@show_marker
-          str << '<c:marker><c:symbol val="none"/></c:marker>'
-        elsif @marker_symbol != :default
-          str << '<c:marker><c:symbol val="' + @marker_symbol.to_s + '"/></c:marker>'
-        end
-
+        str << '<c:marker><c:symbol val="none"/></c:marker>' unless @show_marker
         @labels.to_xml_string(str) unless @labels.nil?
         @data.to_xml_string(str) unless @data.nil?
-        str << ('<c:smooth val="' << ((smooth) ? '1' : '0') << '"/>')
       end
     end
 

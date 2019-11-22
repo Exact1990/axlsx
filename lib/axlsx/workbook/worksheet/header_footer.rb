@@ -19,8 +19,8 @@ module Axlsx
     # @option options [String] odd_footer The content for footers on odd numbered pages.
     # @option options [String] even_header The content for headers on even numbered pages.
     # @option options [String] even_footer The content for footers on even numbered pages.
-    # @option options [String] first_header The content for headers on the first page.
-    # @option options [String] first_footer The content for footers on the first page.
+    # @option options [String] first_header The content for headers on even numbered pages.
+    # @option options [String] first_footer The content for footers on even numbered pages.
     # @option options [Boolean] different_odd_even Setting this to true will show different headers/footers on odd and even pages. When false, the odd headers/footers are used on each page. (Default: false)
     # @option options [Boolean] different_first If true, will use the first header/footer on page 1. Otherwise, the odd header/footer is used.
     def initialize(options = {})
@@ -42,11 +42,13 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      serialized_tag('headerFooter', str) do
-        serialized_element_attributes(str) do |value|
-          value = ::CGI.escapeHTML(value)
-        end
+      str << "<headerFooter "
+      serialized_attributes str
+      str << ">"
+      serialized_element_attributes(str) do |value|
+        value = ::CGI.escapeHTML(value)
       end
+      str << "</headerFooter>"
     end
   end
 end

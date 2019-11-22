@@ -70,7 +70,9 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      serialized_tag('tableStyleElement', str)
+      str << '<tableStyleElement '
+      serialized_attributes str
+      str << '/>'
     end
 
   end

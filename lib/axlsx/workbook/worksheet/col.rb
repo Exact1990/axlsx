@@ -122,19 +122,22 @@ module Axlsx
     # @param [Boolean] use_autowidth If this is false, the cell's
     # autowidth value will be ignored.
     def update_width(cell, fixed_width=nil, use_autowidth=true)
-      if fixed_width.is_a? Numeric
-       self.width = fixed_width
-      elsif use_autowidth
-       cell_width = cell.autowidth
-       self.width = cell_width unless (width || 0) > (cell_width || 0)
-      end 
+       if fixed_width.is_a? Numeric
+         self.width = fixed_width
+       elsif use_autowidth
+         cell_width = cell.autowidth
+         self.width = cell_width unless (width || 0) > (cell_width || 0)
+         #self.width = [width || 0, cell.autowidth || 0].max
+       end 
     end 
 
     # Serialize this columns data to an xml string
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      serialized_tag('col', str)
+      str << '<col '
+      serialized_attributes str
+      str << '/>'
     end
 
   end

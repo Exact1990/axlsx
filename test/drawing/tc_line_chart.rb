@@ -19,11 +19,11 @@ class TestLineChart < Test::Unit::TestCase
     assert(@chart.val_axis.is_a?(Axlsx::ValAxis), "value access not created")
   end
 
-  def test_grouping
-    assert_raise(ArgumentError, "require valid grouping") { @chart.grouping = :inverted }
-    assert_nothing_raised("allow valid grouping") { @chart.grouping = :stacked }
-    assert(@chart.grouping == :stacked)
-  end
+ def test_grouping
+   assert_raise(ArgumentError, "require valid grouping") { @chart.grouping = :inverted }
+   assert_nothing_raised("allow valid grouping") { @chart.grouping = :stacked }
+   assert(@chart.grouping == :stacked)
+ end
 
   def test_to_xml
     schema = Nokogiri::XML::Schema(File.open(Axlsx::DRAWING_XSD))

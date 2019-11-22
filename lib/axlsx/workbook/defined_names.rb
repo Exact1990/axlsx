@@ -11,8 +11,8 @@ module Axlsx
     # @param [String] str
     # @return [String]
     def to_xml_string(str = '')
-      return if empty?
-      str << '<definedNames>'
+      return if @list.empty?
+      str << "<definedNames>"
       each { |defined_name| defined_name.to_xml_string(str) }
       str << '</definedNames>'
     end

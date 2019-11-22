@@ -1,44 +1,38 @@
-Notice: Community Axlsx organization
-===================================================
-All Axlsx related gems have been forked or moved to a community organization: http://github.com/caxlsx
-* Axlsx
-* acts_as_axlsx
-* axlsx_rails
-* activeadmin-axlsx
-
-Please consider helping develop and test these gems.
-
 Axlsx: Office Open XML Spreadsheet Generation
 ====================================
-[![Build Status](https://secure.travis-ci.org/randym/axlsx.svg?branch=master)](http://travis-ci.org/randym/axlsx/)
+[![Build Status](https://secure.travis-ci.org/randym/axlsx.png?branch=master)](http://travis-ci.org/randym/axlsx/)
 
-If you are using axlsx for commercial purposes, or just want to show your
+If you are using axlsx for comercial purposes, or just want to show your
 appreciation for the gem, please don't hesitate to make a donation.
+
+[![Click here to lend your support to: axlsx and make a donation at www.pledgie.com !](http://www.pledgie.com/campaigns/17814.png?skin_name=chrome)](http://www.pledgie.com/campaigns/17814)
 
 **IRC**:[irc.freenode.net / #axlsx](irc://irc.freenode.net/axlsx)
 
-**Git**:[http://github.com/caxlsx/axlsx](http://github.com/caxlsx/axlsx)
+**Git**:[http://github.com/randym/axlsx](http://github.com/randym/axlsx)
+
+**Twitter**: [https://twitter.com/#!/morgan_randy](https://twitter.com/#!/morgan_randy)
 
 **Google Group**: [https://groups.google.com/forum/?fromgroups#!forum/axlsx](https://groups.google.com/forum/?fromgroups#!forum/axlsx)
 
 **Author**: Randy Morgan
 
-**Copyright**: 2011 - 2017
+**Copyright**: 2011 - 2013
 
 **License**: MIT License
 
-**Latest Version**: 3.0.0
+**Latest Version**: 2.0.1
 
-**Ruby Version**: 2.2.7, 2.3.4, 2.4.1
+**Ruby Version**: 1.9.2, 1.9.3, 2.0.0
 
 **JRuby Version**: 1.9 modes
 
-**Rubinius Version**: rubinius 3 * lower versions may run, this gem always tests against head.
+**Rubinius Version**: rubinius 2.0.0dev * lower versions may run, this gem always tests against head.
 
 **Release Date**: September 12th 2013
 
 If you are working in rails, or with active record see:
-[acts_as_xlsx](http://github.com/caxlsx/acts_as_xlsx)
+[acts_as_xlsx](http://github.com/randym/acts_as_xlsx)
 
 acts_as_xlsx is a simple ActiveRecord mixin that lets you generate a workbook with:
 
@@ -48,7 +42,7 @@ Posts.where(created_at > Time.now-30.days).to_xlsx
 
 ** and **
 
-* http://github.com/caxlsx/axlsx_rails
+* http://github.com/straydogstudio/axlsx_rails
 Axlsx_Rails provides an Axlsx renderer so you can move all your spreadsheet code from your controller into view files. Partials are supported so you can organize any code into reusable chunks (e.g. cover sheets, common styling, etc.) You can use it with acts_as_xlsx, placing the to_xlsx call in a view and add ':package => xlsx_package' to the parameter list. Now you can keep your controllers thin!
 
 There are guides for using axlsx and acts_as_xlsx here:
@@ -56,9 +50,9 @@ There are guides for using axlsx and acts_as_xlsx here:
 
 If you are working with ActiveAdmin see:
 
-[activeadmin-axlsx](http://github.com/caxlsx/activeadmin-axlsx)
+[activeadmin_axlsx](http://github.com/randym/activeadmin_axlsx)
 
-It provides a plugin and dsl for generating downloadable reports.
+It provies a plugin and dsl for generating downloadable reports.
 
 The examples directory contains a number of more specific examples as
 well.
@@ -69,7 +63,7 @@ Synopsis
 Axlsx is an Office Open XML Spreadsheet generator for the Ruby programming language.
 With Axlsx you can create excel worksheets with charts, images (with links), automated and fixed column widths, customized styles, functions, tables, conditional formatting, print options, comments, merged cells, auto filters, file and stream serialization  as well as full schema validation. Axlsx excels at helping you generate beautiful Office Open XML Spreadsheet documents without having to understand the entire ECMA specification.
 
-![Screen 1](https://github.com/caxlsx/axlsx/raw/master/examples/sample.png)
+![Screen 1](https://github.com/randym/axlsx/raw/master/examples/sample.png)
 
 
 
@@ -148,7 +142,7 @@ Axlsx::Package.new do |p|
 end
 ```
 
-Please see the [examples](https://github.com/caxlsx/axlsx/tree/master/examples/example.rb) for more.
+Please see the [examples](https://github.com/randym/axlsx/tree/master/examples/example.rb) for more.
 
 {include:file:examples/example.rb}
 
@@ -159,7 +153,7 @@ There is much, much more you can do with this gem. If you get stuck, grab me on 
 
 This gem is 100% documented with YARD, an exceptional documentation library. To see documentation for this, and all the gems installed on your system use:
 
-     gem install yard kramdown
+     gem install yard
 
      yard server -g
 
@@ -170,10 +164,7 @@ This gem has 100% test coverage using test/unit. To execute tests for this gem, 
 
 #Change log
 ---------
-- **
-  - Added Cell#name so you you can quickly create a defined name for a single cell in your workbook.
-  - Added full book view and sheet state management. This means you can specify how the workbook renders as well as manage sheet visibility.
-  - Added smoothing management for line charts series
+
 - **September.12.13**:2.0.1
   - Unpinned rubyzip version
 - **September.12.13**:2.0.0
@@ -237,15 +228,16 @@ related to themes, which axlsx does not implement at this time.
    - you must set 'use_shared_strings' to true. This is most
      conveniently done just before rendering by calling Package.use_shared_strings = true prior to serialization.
 
-  ```ruby
-  p = Axlsx::Package.new
-  p.workbook.add_worksheet(:name => "Basic Worksheet") do |sheet|
-    sheet.add_row ["First Column", "Second", "Third"]
-    sheet.add_row [1, 2, 3]
-  end
-  p.use_shared_strings = true
-  p.serialize('simple.xlsx')
-  ```
+```ruby
+p = Axlsx::Package.new
+p.workbook.add_worksheet(:name => "Basic Worksheet") do |sheet|
+  sheet.add_row ["First Column", "Second", "Third"]
+  sheet.add_row [1, 2, 3]
+end
+p.use_shared_strings = true
+p.serialize('simple.xlsx')
+```
+
    - charts do not render
 
 
@@ -254,9 +246,11 @@ related to themes, which axlsx does not implement at this time.
 Open source software is a community effort. None of this could have been
 done without the help of these awesome folks.
 
-[contributors](https://github.com/caxlsx/axlsx/graphs/contributors)
+[contributors](https://github.com/randym/axlsx/graphs/contributors)
 
-#License
+#Copyright and License
 ----------
+
+Axlsx &copy; 2011-2013 by [Randy Morgan](mailto:digial.ipseity@gmail.com).
 
 Axlsx is licensed under the MIT license. Please see the LICENSE document for more information.

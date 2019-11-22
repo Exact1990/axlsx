@@ -8,8 +8,7 @@ module Axlsx
     # @param [Hash] options Options to parse.
     def parse_options(options={})
       options.each do |key, value|
-        key = :"#{key}="
-        self.send(key, value) if !value.nil? && self.respond_to?(key)
+        self.send("#{key}=", value) if self.respond_to?("#{key}=") && value != nil
       end
     end
   end

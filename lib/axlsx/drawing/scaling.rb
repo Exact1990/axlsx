@@ -6,7 +6,7 @@ module Axlsx
     include Axlsx::OptionsParser
 
     # creates a new Scaling object
-    # @option options [Integer] logBase
+    # @option options [Integer, Fixnum] logBase
     # @option options [Symbol] orientation
     # @option options [Float] max
     # @option options [Float] min
@@ -35,7 +35,7 @@ module Axlsx
     attr_reader :min
 
     # @see logBase
-    def logBase=(v) DataTypeValidator.validate "Scaling.logBase", [Integer], v, lambda { |arg| arg >= 2 && arg <= 1000}; @logBase = v; end
+    def logBase=(v) DataTypeValidator.validate "Scaling.logBase", [Integer, Fixnum], v, lambda { |arg| arg >= 2 && arg <= 1000}; @logBase = v; end
     # @see orientation
     def orientation=(v) RestrictionValidator.validate "Scaling.orientation", [:minMax, :maxMin], v; @orientation = v; end
     # @see max
@@ -49,10 +49,10 @@ module Axlsx
     # @return [String]
     def to_xml_string(str = '')
       str << '<c:scaling>'
-      str << ('<c:logBase val="' << @logBase.to_s << '"/>') unless @logBase.nil?
-      str << ('<c:orientation val="' << @orientation.to_s << '"/>') unless @orientation.nil?
-      str << ('<c:min val="' << @min.to_s << '"/>') unless @min.nil?
-      str << ('<c:max val="' << @max.to_s << '"/>') unless @max.nil?
+      str << '<c:logBase val="' << @logBase.to_s << '"/>' unless @logBase.nil?
+      str << '<c:orientation val="' << @orientation.to_s << '"/>' unless @orientation.nil?
+      str << '<c:min val="' << @min.to_s << '"/>' unless @min.nil?
+      str << '<c:max val="' << @max.to_s << '"/>' unless @max.nil?
       str << '</c:scaling>'
     end
 
